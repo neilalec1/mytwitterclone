@@ -1,7 +1,6 @@
 from flask import Flask, render_template, url_for, flash, redirect
 from flask_sqlalchemy import SQLAlchemy
-from flask_login import UserMixin
-from flask_login import LoginManager
+from flask_login import UserMixin, LoginManager, login_user, current_user
 from forms import RegistrationForm, LoginForm
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -10,9 +9,16 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'  # Use SQLite databa
 app.config['SECRET_KEY'] = 'your_secret_key'  # Replace with a real secret key
 db = SQLAlchemy(app)
 
+login_manager = LoginManager(app)
+login_manager.login_view = 'login'  # The function name of your login route
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
+
 @app.route('/')
 def home():
-    return render_template('home.html')
+    return render_template('home.html', current_user=current_user)
 
 if __name__ == '__main__':
     app.run(debug=True)
@@ -28,13 +34,6 @@ class User(db.Model, UserMixin):
         return f"User('{self.username}', '{self.email}')"
     
 
-login_manager = LoginManager(app)
-login_manager.login_view = 'login'  # The function name of your login route
-
-@login_manager.user_loader
-def load_user(user_id):
-    return User.query.get(int(user_id))
-
 
 @app.route("/signup", methods=['GET', 'POST'])
 def signup():
@@ -48,7 +47,7 @@ def signup():
         return redirect(url_for('login'))
     return render_template('signup.html', title='Sign Up', form=form)
 
-@app.route("/login", methods=['GET', 'POST'])
+@app.route("/login", methods=['GET', 'POST'], endpoint='login')
 def login():
     form = LoginForm()
     if form.validate_on_submit():
