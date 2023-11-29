@@ -10,5 +10,14 @@
         <li>Email: {{ user.email }}</li>
         <!-- Add other user details you want to display -->
     </ul>
+
+    <!-- Follow/Unfollow Buttons -->
+    {% if current_user.is_authenticated and current_user != user %}
+        {% if current_user.is_following(user) %}
+            <a href="{{ url_for('unfollow', username=user.username) }}">Unfollow</a>
+        {% else %}
+            <a href="{{ url_for('follow', username=user.username) }}">Follow</a>
+        {% endif %}
+    {% endif %}
 </body>
 </html>

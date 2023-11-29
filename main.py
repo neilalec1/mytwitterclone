@@ -82,6 +82,35 @@ def new_tweet():
         return redirect(url_for('home'))
     return render_template('create_tweet.html', title='New Tweet', form=form)
 
+@app.route('/follow/<username>')
+@login_required
+def follow(username):
+    user = User.query.filter_by(username=username).first()
+    if user is None:
+        flash('User not found.')
+        return redirect(url_for('home'))
+    if user == current_user:
+        flash('You cannot follow yourself!')
+        return redirect(url_for('user_profile', username=username))
+    current_user.follow(user)
+    db.session.commit()
+    flash('You are now following {}!'.format(username))
+    return redirect(url_for('user_profile', username=username))
+
+@app.route('/unfollow/<username>')
+@login_required
+def unfollow(username):
+    user = User.query.filter_by(username=username).first()
+    if user is None:
+        flash('User not found.')
+        return redirect(url_for('home'))
+    if user == current_user:
+        flash('You cannot unfollow yourself!')
+        return redirect(url_for('user_profile', username=username))
+    current_user.unfollow(user)
+    db.session.commit()
+    flash('You have stopped following {}.'.format(username))
+    return redirect(url_for('user_profile', username=username))
 
 
 class Tweet(db.Model):
@@ -89,15 +118,44 @@ class Tweet(db.Model):
     content = db.Column(db.String(280), nullable=False)  # Twitter's character limit
     date_posted = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    user = db.relationship('User')
 
     def __repr__(self):
         return f"Tweet('{self.content}', '{self.date_posted}')"
     
+
+# Followers association table
+followers = db.Table('followers',
+    db.Column('follower_id', db.Integer, db.ForeignKey('user.id')),
+    db.Column('followed_id', db.Integer, db.ForeignKey('user.id'))
+)
+
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(20), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(60), nullable=False)
 
+    # New fields for following functionality
+    followed = db.relationship(
+        'User', secondary='followers',
+        primaryjoin=(followers.c.follower_id == id),
+        secondaryjoin=(followers.c.followed_id == id),
+        backref=db.backref('followers', lazy='dynamic'), lazy='dynamic')
+    
+
     def __repr__(self):
         return f"User('{self.username}', '{self.email}')"
+    
+    def follow(self, user):
+        if not self.is_following(user):
+            self.followed.append(user)
+
+    def unfollow(self, user):
+        if self.is_following(user):
+            self.followed.remove(user)
+
+    def is_following(self, user):
+        return self.followed.filter(
+            followers.c.followed_id == user.id).count() > 0
+    
