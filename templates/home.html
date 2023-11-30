@@ -2,46 +2,49 @@
 <html>
 <head>
     <title>Home</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
-    <h1>Welcome to My Twitter Clone!</h1>
-    <p>This is the home page.</p>
-    
-    {% if current_user.is_authenticated %}
-        <p>Hello, {{ current_user.username }}!</p>
-        <a href="{{ url_for('user_profile', username=current_user.username) }}">My Profile</a> |
-        <a href="{{ url_for('logout') }}">Logout</a>
-
-        <!-- Tweet Submission Form -->
-        <form method="POST" action="{{ url_for('home') }}">
-            {{ form.hidden_tag() }}
-            <div>
-                {{ form.content.label }} {{ form.content() }}
-            </div>
-            <div>
-                {{ form.submit() }}
-            </div>
-        </form>
-
-    {% else %}
-        <a href="{{ url_for('login') }}">Login</a> |
-        <a href="{{ url_for('signup') }}">Sign Up</a>
-    {% endif %}
-
-    <!-- Display Tweets -->
-    <h2>Recent Tweets</h2>
-    {% for tweet in tweets %}
-        <div class="tweet">
-            <p>{{ tweet.content }}<br>
-                by <a href="{{ url_for('user_profile', username=tweet.user.username) }}">{{ tweet.user.username }}</a>
-                at {{ tweet.date_posted.strftime('%Y-%m-%d %H:%M') }}
-             <!-- Delete button (only for the user who posted the tweet) -->
-            {% if current_user == tweet.user %}
-                <a href="{{ url_for('delete_tweet', tweet_id=tweet.id) }}">Delete</a>
+    <header>
+        <div class="container">
+            <h1>Welcome to My Twitter Clone!</h1>
+            {% if current_user.is_authenticated %}
+                <p>Hello, {{ current_user.username }}!</p>
+                <a href="{{ url_for('user_profile', username=current_user.username) }}">My Profile</a> |
+                <a href="{{ url_for('logout') }}">Logout</a>
+            {% else %}
+                <a href="{{ url_for('login') }}">Login</a> |
+                <a href="{{ url_for('signup') }}">Sign Up</a>
             {% endif %}
-            </p>
         </div>
-    {% endfor %}
+    </header>
 
+    <div class="container">
+        {% if current_user.is_authenticated %}
+            <form method="POST" action="{{ url_for('home') }}" style="text-align: center;">
+                {{ form.hidden_tag() }}
+                <div>
+                    {{ form.content.label }} 
+                    {{ form.content(style='width: 90%; margin: auto;') }}
+                </div>
+                <div>
+                    {{ form.submit() }}
+                </div>
+            </form>
+        {% endif %}
+
+        <h2>Recent Tweets</h2>
+        {% for tweet in tweets %}
+            <div class="tweet">
+                <p>{{ tweet.content }}<br>
+                    by <a href="{{ url_for('user_profile', username=tweet.user.username) }}">{{ tweet.user.username }}</a>
+                    at {{ tweet.date_posted.strftime('%Y-%m-%d %H:%M') }}
+                {% if current_user == tweet.user %}
+                    <a href="{{ url_for('delete_tweet', tweet_id=tweet.id) }}">Delete</a>
+                {% endif %}
+                </p>
+            </div>
+        {% endfor %}
+    </div>
 </body>
 </html>

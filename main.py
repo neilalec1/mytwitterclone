@@ -6,17 +6,24 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
 from forms import TweetForm
 
+
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'  # Use SQLite database
-app.config['SECRET_KEY'] = 'your_secret_key'  # Replace with a real secret key
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'  #use SQLite database
+app.config['SECRET_KEY'] = 'your_secret_key'  #replace with a real secret key
 db = SQLAlchemy(app)
 
+
+
+
 login_manager = LoginManager(app)
-login_manager.login_view = 'login'  # The function name of your login route
+login_manager.login_view = 'login'  #function name of login route
 
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
+
+
+
 
 @app.route('/', methods=['GET', 'POST'])
 def home():
@@ -32,7 +39,6 @@ def home():
 
 if __name__ == '__main__':
     app.run(debug=True)
-
 
 @app.route('/user/<username>')
 def user_profile(username):
@@ -74,17 +80,6 @@ def logout():
     logout_user()
     return redirect(url_for('home'))
 
-@app.route("/tweet/new", methods=['GET', 'POST'])
-@login_required
-def new_tweet():
-    form = TweetForm()
-    if form.validate_on_submit():
-        tweet = Tweet(content=form.content.data, user_id=current_user.id)
-        db.session.add(tweet)
-        db.session.commit()
-        flash('Your tweet has been posted!', 'success')
-        return redirect(url_for('home'))
-    return render_template('create_tweet.html', title='New Tweet', form=form)
 
 @app.route('/follow/<username>')
 @login_required
@@ -129,6 +124,8 @@ def delete_tweet(tweet_id):
     return redirect(url_for('home'))
 
 
+
+
 class Tweet(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.String(280), nullable=False)  # Twitter's character limit
@@ -139,8 +136,7 @@ class Tweet(db.Model):
     def __repr__(self):
         return f"Tweet('{self.content}', '{self.date_posted}')"
     
-
-# Followers association table
+#followers association table
 followers = db.Table('followers',
     db.Column('follower_id', db.Integer, db.ForeignKey('user.id')),
     db.Column('followed_id', db.Integer, db.ForeignKey('user.id'))

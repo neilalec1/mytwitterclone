@@ -1,0 +1,103 @@
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #e8f0fe;
+    color: #333;
+}
+    .container {
+width: 80%;
+margin: auto;
+overflow: hidden;
+}
+
+.profile-info, .auth-form {
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    margin: 20px 0;
+    padding: 20px;
+    border-radius: 15px;
+    text-align: left;
+    list-style-type: none;
+}
+
+.follow-buttons, .form-group {
+    margin-bottom: 10px;
+}
+
+.follow-buttons a, .auth-form input[type="submit"] {
+    padding: 10px 20px;
+    background-color: #50b3a2;
+    border: none;
+    color: white;
+    cursor: pointer;
+    border-radius: 8px;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.follow-buttons a:hover, .auth-form input[type="submit"]:hover {
+    background-color: #429188;
+}
+
+header {
+    background: #50b3a2;
+    color: white;
+    padding: 20px 0;
+    border-bottom: #e8491d 3px solid;
+    border-radius: 0 0 15px 15px;
+}
+header a, header p {
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 16px;
+    margin: 0 10px;
+    display: inline-block;
+}
+.tweet, form {
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    margin: 20px 0;
+    padding: 20px;
+    border-radius: 15px;
+}
+form div {
+    margin-bottom: 10px;
+    text-align: left;
+}
+form label, form input, form textarea {
+    display: block;
+    margin: auto;
+    width: 90%;
+}
+input[type="text"], input[type="email"], input[type="password"], textarea {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    width: 90%;
+    margin: 10px auto;
+    display: block;
+}
+input[type="submit"] {
+    padding: 10px 20px;
+    background-color: #50b3a2;
+    border: none;
+    color: white;
+    cursor: pointer;
+    border-radius: 8px;
+}
+input[type="submit"]:hover {
+    background-color: #429188;
+}
+
+.profile-page {
+    text-align: center;
+}
+
+.profile-info li {
+    background-color: #fff;
+    margin: 10px 0;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}

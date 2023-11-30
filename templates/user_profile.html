@@ -2,23 +2,28 @@
 <html>
 <head>
     <title>{{ user.username }}'s Profile</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
-    <h1>{{ user.username }}'s Profile</h1>
-    <ul>
-        <li>Username: {{ user.username }}</li>
-        <li>Email: {{ user.email }}</li>
-        <li>Followers: {{ follower_count }}</li>
-        <li>Following: {{ followee_count }}</li>
-    </ul>
+    <div class="container profile-page">
+        <h1>{{ user.username }}'s Profile</h1>
+        <ul class="profile-info">
+            <li>Username: {{ user.username }}</li>
+            <li>Email: {{ user.email }}</li>
+            <li>Followers: {{ follower_count }}</li>
+            <li>Following: {{ followee_count }}</li>
+        </ul>
 
-    <!-- Follow/Unfollow Buttons -->
-    {% if current_user.is_authenticated and current_user != user %}
-        {% if current_user.is_following(user) %}
-            <a href="{{ url_for('unfollow', username=user.username) }}">Unfollow</a>
-        {% else %}
-            <a href="{{ url_for('follow', username=user.username) }}">Follow</a>
-        {% endif %}
-    {% endif %}
+        <!-- Follow/Unfollow Buttons -->
+        <div class="follow-buttons">
+            {% if current_user.is_authenticated and current_user != user %}
+                {% if current_user.is_following(user) %}
+                    <a href="{{ url_for('unfollow', username=user.username) }}" class="button">Unfollow</a>
+                {% else %}
+                    <a href="{{ url_for('follow', username=user.username) }}" class="button">Follow</a>
+                {% endif %}
+            {% endif %}
+        </div>
+    </div>
 </body>
 </html>
