@@ -5,13 +5,14 @@ from forms import RegistrationForm, LoginForm
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
 from forms import TweetForm
+from flask_migrate import Migrate
 
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'  #SQLite database
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://mytwitterclone_user:lk0jh11H8CqMysxKqCU8psoZYwIvyIMZ@dpg-clkdedmrem5c73ah2atg-a/mytwitterclone'  #PostGreSQL database
 app.config['SECRET_KEY'] = '\xe9d\xc1\xaf\xe6\x8c\x90\xcc\xba\x9f>\xc0\x19\xb1k\x15\x07\x14(\xf0\x7fQ&\xaa'  #my not so secret key
 db = SQLAlchemy(app)
-
+migrate = Migrate(app, db)
 
 
 
