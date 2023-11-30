@@ -4,7 +4,7 @@
     <title>Home</title>
 </head>
 <body>
-    <h1>Welcome to Mini-Twitter!</h1>
+    <h1>Welcome to My Twitter Clone!</h1>
     <p>This is the home page.</p>
     
     {% if current_user.is_authenticated %}
@@ -34,7 +34,12 @@
         <div class="tweet">
             <p>{{ tweet.content }}<br>
                 by <a href="{{ url_for('user_profile', username=tweet.user.username) }}">{{ tweet.user.username }}</a>
-                at {{ tweet.date_posted.strftime('%Y-%m-%d %H:%M') }}</p>
+                at {{ tweet.date_posted.strftime('%Y-%m-%d %H:%M') }}
+             <!-- Delete button (only for the user who posted the tweet) -->
+            {% if current_user == tweet.user %}
+                <a href="{{ url_for('delete_tweet', tweet_id=tweet.id) }}">Delete</a>
+            {% endif %}
+            </p>
         </div>
     {% endfor %}
 

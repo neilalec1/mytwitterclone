@@ -37,7 +37,11 @@ if __name__ == '__main__':
 @app.route('/user/<username>')
 def user_profile(username):
     user = User.query.filter_by(username=username).first_or_404()
-    return render_template('user_profile.html', user=user)
+    follower_count = user.followers.count()
+    followee_count = user.followed.count()
+    return render_template('user_profile.html', user=user,
+                           follower_count=follower_count, 
+                           followee_count=followee_count)
 
 @app.route("/signup", methods=['GET', 'POST'])
 def signup():
@@ -112,6 +116,18 @@ def unfollow(username):
     flash('You have stopped following {}.'.format(username))
     return redirect(url_for('user_profile', username=username))
 
+@app.route("/tweet/delete/<int:tweet_id>")
+@login_required
+def delete_tweet(tweet_id):
+    tweet = Tweet.query.get_or_404(tweet_id)
+    if tweet.user != current_user:
+        flash('You do not have permission to delete this tweet.', 'danger')
+        return redirect(url_for('home'))
+    db.session.delete(tweet)
+    db.session.commit()
+    flash('Your tweet has been deleted!', 'success')
+    return redirect(url_for('home'))
+
 
 class Tweet(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -138,11 +154,12 @@ class User(db.Model, UserMixin):
 
     # New fields for following functionality
     followed = db.relationship(
-        'User', secondary='followers',
+        'User', secondary=followers,
         primaryjoin=(followers.c.follower_id == id),
         secondaryjoin=(followers.c.followed_id == id),
         backref=db.backref('followers', lazy='dynamic'), lazy='dynamic')
     
+
 
     def __repr__(self):
         return f"User('{self.username}', '{self.email}')"
@@ -159,3 +176,4 @@ class User(db.Model, UserMixin):
         return self.followed.filter(
             followers.c.followed_id == user.id).count() > 0
     
+
