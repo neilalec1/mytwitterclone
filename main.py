@@ -9,7 +9,7 @@ from forms import TweetForm
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'  #use SQLite database
-app.config['SECRET_KEY'] = 'your_secret_key'  #replace with a real secret key
+app.config['SECRET_KEY'] = '\xe9d\xc1\xaf\xe6\x8c\x90\xcc\xba\x9f>\xc0\x19\xb1k\x15\x07\x14(\xf0\x7fQ&\xaa'  #my not so secret key
 db = SQLAlchemy(app)
 
 
@@ -68,7 +68,6 @@ def login():
         user = User.query.filter_by(email=form.email.data).first()
         if user and check_password_hash(user.password, form.password.data):
             login_user(user)
-            return redirect(url_for('home'))
             flash('You have been logged in!', 'success')
             return redirect(url_for('home'))
         else:
