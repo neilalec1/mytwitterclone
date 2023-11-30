@@ -8,7 +8,7 @@ from forms import TweetForm
 
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'  #use SQLite database
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'  #SQLite database
 app.config['SECRET_KEY'] = '\xe9d\xc1\xaf\xe6\x8c\x90\xcc\xba\x9f>\xc0\x19\xb1k\x15\x07\x14(\xf0\x7fQ&\xaa'  #my not so secret key
 db = SQLAlchemy(app)
 
@@ -127,7 +127,7 @@ def delete_tweet(tweet_id):
 
 class Tweet(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    content = db.Column(db.String(280), nullable=False)  # Twitter's character limit
+    content = db.Column(db.String(280), nullable=False)  #Twitter's character limit
     date_posted = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     user = db.relationship('User')
@@ -147,7 +147,7 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(60), nullable=False)
 
-    # New fields for following functionality
+    #new fields for following functionality
     followed = db.relationship(
         'User', secondary=followers,
         primaryjoin=(followers.c.follower_id == id),

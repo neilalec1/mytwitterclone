@@ -14,7 +14,7 @@
             <li>Following: {{ followee_count }}</li>
         </ul>
 
-        <!-- Follow/Unfollow Buttons -->
+        <!-- follow/unfollow buttons -->
         <div class="follow-buttons">
             {% if current_user.is_authenticated and current_user != user %}
                 {% if current_user.is_following(user) %}
